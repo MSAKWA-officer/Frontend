@@ -23,8 +23,8 @@ export default function EditCoursePage() {
         .then(({ data }) => {
           setName(data.name);
           setCode(data.code);
-          setDescription(data.description);
-          setProgrammeId(data.programmeId);
+          setDescription(data.description ?? ""); // fallback to empty string
+          setProgrammeId(data.programmeId ?? ""); // fallback to empty string
         })
         .catch((err: any) => console.error("Error fetching course", err));
     }
@@ -47,11 +47,16 @@ export default function EditCoursePage() {
     setIsSubmitting(true);
 
     try {
-      await CLIENT.put<Course>(`${COURSES_API}/${id}`, { name, code, description, programmeId });
-      setIsSubmitting(false);
+      await CLIENT.put<Course>(`${COURSES_API}/${id}`, {
+        name,
+        code,
+        description,
+        programmeId,
+      });
       navigate("/courses");
     } catch (error) {
       console.error("Error updating course", error);
+    } finally {
       setIsSubmitting(false);
     }
   };

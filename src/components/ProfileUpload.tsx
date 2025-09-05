@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/UserContext"; // ✅ import context
 
 const ProfileUpload: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
-  const { user, setUser } = useContext(UserContext); // ✅ use context
+  const { user } = useContext(UserContext); // ✅ use context
 
   const handleUpload = async () => {
     if (!file || !user?.id) return;
@@ -21,7 +21,7 @@ const ProfileUpload: React.FC = () => {
       );
 
       // ✅ Update context and localStorage
-      setUser(res.data);
+     
       localStorage.setItem("user", JSON.stringify(res.data));
       alert("Profile image updated!");
     } catch (err) {

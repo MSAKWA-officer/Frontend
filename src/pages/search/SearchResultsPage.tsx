@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import { CLIENT } from "../utils/constants/apiClient";
+import { SEARCH_API } from "../utils/constants/appConstants"; // your search endpoint
+
+type SearchResult = {
+  id: string | number;
+  name: string;
+};
 
 const SearchResultsPage: React.FC = () => {
-  const [results, setResults] = useState([]); // State to store results
-  const location = useLocation(); // Get URL info
+  const [results, setResults] = useState<SearchResult[]>([]); // ✅ typed state
+  const location = useLocation();
 
-  // Extract query parameter from URL
   const query = new URLSearchParams(location.search).get("query") || "";
 
-  // Fetch data whenever query changes
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/api/search?query=${query}`
-        );
-        setResults(res.data);
+        const res = await CLIENT.get<SearchResult[]>(`${SEARCH_API}?query=${encodeURIComponent(query)}`);
+        setResults(res.data); // ✅ now TypeScript knows this is SearchResult[]
       } catch (err) {
         console.error("Search failed:", err);
       }
@@ -33,7 +35,7 @@ const SearchResultsPage: React.FC = () => {
 
       {results.length > 0 ? (
         <ul>
-          {results.map((item: any) => (
+          {results.map((item) => (
             <li key={item.id}>{item.name}</li>
           ))}
         </ul>

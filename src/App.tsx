@@ -1,34 +1,33 @@
 // src/App.tsx
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
-import DashboardPage from "./pages/dashboards/DashboardPage";
-import CollegeListPage from "./pages/colleges/CollegeListPage";
-import CreateCollegePage from "./pages/colleges/CreateCollegePage";
-import EditCollegePage from "./pages/colleges/EditCollegePage";
-import DepartmentListPage from "./pages/departments/DepartmentListPage";
-import CreateDepartmentPage from "./pages/departments/CreateDepartmentPage";
-import EditDepartmentPage from "./pages/departments/EditDepartmentPage";
-import ProgrammeListPage from "./pages/programmes/ProgrammeLIstPage";
-import CreateProgrammePage from "./pages/programmes/CreateProgrammPage";
-import EditProgrammePage from "./pages/programmes/EditProgrammePage";
-import CourseListPage from "./pages/courses/CourseListPage";
-import CreateCoursePage from "./pages/courses/CreateCoursePage";
-import EditCoursePage from "./pages/courses/EditCoursePage";
-import StaffListPage from "./pages/staffs/StaffListPage";
-import CreateStaffPage from "./pages/staffs/CreateStaffPage";
-import EditStaffPage from "./pages/staffs/EditStaffPage";
-import TaskListPage from "./pages/tasks/TaskListPage";
-import CreateTaskPage from "./pages/tasks/CreateTaskPage";
-import EditTaskPage from "./pages/tasks/EditTaskPage";
-import ProfilePage from "./pages/ProfilePage";   // ✅ renamed import
-import LoginPage from "./pages/logs/LoginPage";
-import RegisterPage from "./pages/logs/RegisterPage";
-import SearchResultsPage from "./pages/search/SearchResultsPage";
-
-// ✅ Import the SearchProvider
-
+// ✅ Lazy-loaded pages for dynamic imports
+const DashboardPage = lazy(() => import("./pages/dashboards/DashboardPage"));
+const CollegeListPage = lazy(() => import("./pages/colleges/CollegeListPage"));
+const CreateCollegePage = lazy(() => import("./pages/colleges/CreateCollegePage"));
+const EditCollegePage = lazy(() => import("./pages/colleges/EditCollegePage"));
+const DepartmentListPage = lazy(() => import("./pages/departments/DepartmentListPage"));
+const CreateDepartmentPage = lazy(() => import("./pages/departments/CreateDepartmentPage"));
+const EditDepartmentPage = lazy(() => import("./pages/departments/EditDepartmentPage"));
+const ProgrammeListPage = lazy(() => import("./pages/programmes/ProgrammeLIstPage"));
+const CreateProgrammePage = lazy(() => import("./pages/programmes/CreateProgrammPage"));
+const EditProgrammePage = lazy(() => import("./pages/programmes/EditProgrammePage"));
+const CourseListPage = lazy(() => import("./pages/courses/CourseListPage"));
+const CreateCoursePage = lazy(() => import("./pages/courses/CreateCoursePage"));
+const EditCoursePage = lazy(() => import("./pages/courses/EditCoursePage"));
+const StaffListPage = lazy(() => import("./pages/staffs/StaffListPage"));
+const CreateStaffPage = lazy(() => import("./pages/staffs/CreateStaffPage"));
+const EditStaffPage = lazy(() => import("./pages/staffs/EditStaffPage"));
+const TaskListPage = lazy(() => import("./pages/tasks/TaskListPage"));
+const CreateTaskPage = lazy(() => import("./pages/tasks/CreateTaskPage"));
+const EditTaskPage = lazy(() => import("./pages/tasks/EditTaskPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const LoginPage = lazy(() => import("./pages/logs/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/logs/RegisterPage"));
+const SearchResultsPage = lazy(() => import("./pages/search/SearchResultsPage"));
 
 function App() {
   const location = useLocation();
@@ -36,30 +35,28 @@ function App() {
     location.pathname === "/login" || location.pathname === "/register";
 
   return (
-    // ✅ Wrap the entire app with SearchProvider
- 
-      <div className="h-screen flex flex-col">
-        {/* Show Navbar only if NOT on login/register */}
+    <div className="h-screen flex flex-col">
+      {/* Show Navbar only if NOT on login/register */}
+      {!isAuthPage && (
+        <div className="flex">
+          <Navbar />
+        </div>
+      )}
+
+      <div className="flex flex-1 pt-16">
+        {/* Show Sidebar only if NOT on login/register */}
         {!isAuthPage && (
-          <div className="flex">
-            <Navbar />
-          </div>
+          <aside className="w-48 fixed top-16 left-0 bottom-0 bg-gray-900 text-gray-300 shadow-lg flex flex-col">
+            <Sidebar />
+          </aside>
         )}
 
-        <div className="flex flex-1 pt-16">
-          {/* Show Sidebar only if NOT on login/register */}
-          {!isAuthPage && (
-            <aside className="w-48 fixed top-16 left-0 bottom-0 bg-gray-900 text-gray-300 shadow-lg flex flex-col">
-              <Sidebar />
-            </aside>
-          )}
-
-          {/* Main content */}
-          <main
-            className={`flex-1 ${
-              !isAuthPage ? "ml-48" : ""
-            } bg-sky-500  p-6 overflow-y-auto`}
-          >
+        {/* Main content */}
+        <main
+          className={`flex-1 ${!isAuthPage ? "ml-48" : ""} bg-sky-500 p-6 overflow-y-auto`}
+        >
+          {/* Wrap routes with Suspense for lazy loading */}
+          <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               {/* Default route redirects to login */}
               <Route path="/" element={<Navigate to="/login" />} />
@@ -90,13 +87,13 @@ function App() {
               <Route path="/edit-task/:id" element={<EditTaskPage />} />
               <Route path="/search" element={<SearchResultsPage />} />
 
-              {/* ✅ User Profile Route */}
+              {/* User Profile Route */}
               <Route path="/profile" element={<ProfilePage />} />
             </Routes>
-          </main>
-        </div>
+          </Suspense>
+        </main>
       </div>
- 
+    </div>
   );
 }
 

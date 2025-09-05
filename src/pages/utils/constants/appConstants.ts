@@ -6,3 +6,4 @@ export const DEPARTMENTS_API = "departments";
 export const COURSES_API = "courses";
 export const STAFF_API = "staffs";
 export const TASKS_API = "tasks";
+export const SEARCH_API = "/api/search";
