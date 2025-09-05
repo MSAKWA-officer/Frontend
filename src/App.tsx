@@ -25,8 +25,8 @@ const TaskListPage = lazy(() => import("./pages/tasks/TaskListPage"));
 const CreateTaskPage = lazy(() => import("./pages/tasks/CreateTaskPage"));
 const EditTaskPage = lazy(() => import("./pages/tasks/EditTaskPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
-const LoginPage = lazy(() => import("./pages/logs/LoginPage"));
-const RegisterPage = lazy(() => import("./pages/logs/RegisterPage"));
+const LoginPage = lazy(() => import("./pages/logins/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/registers/RegisterPage"));
 const SearchResultsPage = lazy(() => import("./pages/search/SearchResultsPage"));
 
 function App() {
